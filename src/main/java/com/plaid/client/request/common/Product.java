@@ -9,6 +9,7 @@ public enum Product {
   @SerializedName("income") INCOME,
   @SerializedName("identity") IDENTITY,
   @SerializedName("auth") AUTH,
-  //  @SerializedName("risk") RISK
   @SerializedName("transactions") TRANSACTIONS,
+  @SerializedName("investments") INVESTMENTS,
+  @SerializedName("liabilities") LIABILITIES,
 }

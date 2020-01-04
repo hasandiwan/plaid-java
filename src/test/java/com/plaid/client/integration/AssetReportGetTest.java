@@ -30,7 +30,7 @@ public class AssetReportGetTest extends AbstractItemIntegrationTest {
   @Test
   public void testAssetReportGetSuccess() throws Exception {
     // Create asset report to get an asset report token
-    List<String> accessTokens = Arrays.asList(getItemCreateResponse().getAccessToken());
+    List<String> accessTokens = Arrays.asList(getItemPublicTokenExchangeResponse().getAccessToken());
     Response<AssetReportCreateResponse> createResponse = AssetReportCreateTest.createAssetReport(client(), accessTokens);
     String assetReportToken = createResponse.body().getAssetReportToken();
 
@@ -59,8 +59,17 @@ public class AssetReportGetTest extends AbstractItemIntegrationTest {
     assertNotNull(respBody.getReport());
 
     // An Asset Report with Insights should include a name (when available).
-    assertNotNull(respBody.getReport().getItems().get(0).getAccounts().get(0).getTransactions()
-      .get(0).getName());
+    assertTrue(containsTransactionWithName(respBody.getReport()));
+  }
+
+  private boolean containsTransactionWithName(AssetReportGetResponse.AssetReport assetReport) {
+    List<AssetReportGetResponse.Account> accounts = assetReport.getItems().get(0).getAccounts();
+    for (AssetReportGetResponse.Account account : accounts) {
+      if (account.getTransactions().size() > 0) {
+        return account.getTransactions().get(0).getName() != null;
+      }
+    }
+    return false;
   }
 
   /**

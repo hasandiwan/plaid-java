@@ -1,6 +1,6 @@
 package com.plaid.client.response;
 
-public final class Account {
+public class Account {
   private String accountId;
   private String type;
   private String subtype;
@@ -8,6 +8,7 @@ public final class Account {
   private String name;
   private String mask;
   private String officialName;
+  private String verificationStatus;
 
   public String getAccountId() {
     return accountId;
@@ -35,6 +36,10 @@ public final class Account {
 
   public String getOfficialName() {
     return officialName;
+  }
+
+  public String getVerificationStatus() {
+    return verificationStatus;
   }
 
   public static final class Balances {

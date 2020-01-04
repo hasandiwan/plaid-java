@@ -16,25 +16,22 @@ import com.plaid.client.request.CategoriesGetRequest;
 import com.plaid.client.request.CreditDetailsGetRequest;
 import com.plaid.client.request.IdentityGetRequest;
 import com.plaid.client.request.IncomeGetRequest;
+import com.plaid.client.request.InvestmentsTransactionsGetRequest;
+import com.plaid.client.request.InvestmentsHoldingsGetRequest;
 import com.plaid.client.request.InstitutionsGetByIdRequest;
 import com.plaid.client.request.InstitutionsGetRequest;
 import com.plaid.client.request.InstitutionsSearchRequest;
 import com.plaid.client.request.ItemAccessTokenInvalidateRequest;
-import com.plaid.client.request.ItemAccessTokenUpdateVersionRequest;
 import com.plaid.client.request.ItemApexProcessorTokenCreateRequest;
-import com.plaid.client.request.ItemCreateRequest;
-import com.plaid.client.request.ItemCredentialsEncryptRequest;
-import com.plaid.client.request.ItemCredentialsUpdateRequest;
-import com.plaid.client.request.ItemDeleteRequest;
 import com.plaid.client.request.ItemDwollaProcessorTokenCreateRequest;
 import com.plaid.client.request.ItemGetRequest;
-import com.plaid.client.request.ItemMfaEncryptRequest;
-import com.plaid.client.request.ItemMfaRequest;
 import com.plaid.client.request.ItemPublicTokenCreateRequest;
 import com.plaid.client.request.ItemPublicTokenExchangeRequest;
 import com.plaid.client.request.ItemRemoveRequest;
 import com.plaid.client.request.ItemStripeTokenCreateRequest;
 import com.plaid.client.request.ItemWebhookUpdateRequest;
+import com.plaid.client.request.LiabilitiesGetRequest;
+import com.plaid.client.request.SandboxItemFireWebhookRequest;
 import com.plaid.client.request.SandboxItemResetLoginRequest;
 import com.plaid.client.request.SandboxPublicTokenCreateRequest;
 import com.plaid.client.request.TransactionsGetRequest;
@@ -50,25 +47,22 @@ import com.plaid.client.response.CategoriesGetResponse;
 import com.plaid.client.response.CreditDetailsGetResponse;
 import com.plaid.client.response.IdentityGetResponse;
 import com.plaid.client.response.IncomeGetResponse;
+import com.plaid.client.response.InvestmentsTransactionsGetResponse;
+import com.plaid.client.response.InvestmentsHoldingsGetResponse;
 import com.plaid.client.response.InstitutionsGetByIdResponse;
 import com.plaid.client.response.InstitutionsGetResponse;
 import com.plaid.client.response.InstitutionsSearchResponse;
 import com.plaid.client.response.ItemAccessTokenInvalidateResponse;
-import com.plaid.client.response.ItemAccessTokenUpdateVersionResponse;
 import com.plaid.client.response.ItemApexProcessorTokenCreateResponse;
-import com.plaid.client.response.ItemCreateResponse;
-import com.plaid.client.response.ItemCredentialsEncryptResponse;
-import com.plaid.client.response.ItemCredentialsUpdateResponse;
-import com.plaid.client.response.ItemDeleteResponse;
 import com.plaid.client.response.ItemDwollaProcessorTokenCreateResponse;
 import com.plaid.client.response.ItemGetResponse;
-import com.plaid.client.response.ItemMfaEncryptResponse;
-import com.plaid.client.response.ItemMfaResponse;
 import com.plaid.client.response.ItemPublicTokenCreateResponse;
 import com.plaid.client.response.ItemPublicTokenExchangeResponse;
 import com.plaid.client.response.ItemRemoveResponse;
 import com.plaid.client.response.ItemStripeTokenCreateResponse;
 import com.plaid.client.response.ItemWebhookUpdateResponse;
+import com.plaid.client.response.LiabilitiesGetResponse;
+import com.plaid.client.response.SandboxItemFireWebhookResponse;
 import com.plaid.client.response.SandboxItemResetLoginResponse;
 import com.plaid.client.response.SandboxPublicTokenCreateResponse;
 import com.plaid.client.response.TransactionsGetResponse;
@@ -82,23 +76,8 @@ public interface PlaidApiService {
   // item, link, and credentials calls
   ////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////
-  @POST("/item/create")
-  Call<ItemCreateResponse> itemCreate(@Body ItemCreateRequest request);
-
-  @POST("/item/mfa")
-  Call<ItemMfaResponse> itemMfa(@Body ItemMfaRequest request);
-
   @POST("/item/get")
   Call<ItemGetResponse> itemGet(@Body ItemGetRequest request);
-
-  @POST("/item/credentials/update")
-  Call<ItemCredentialsUpdateResponse> itemCredentialsUpdate(@Body ItemCredentialsUpdateRequest request);
-
-  @POST("/item/credentials/encrypt")
-  Call<ItemCredentialsEncryptResponse> itemCredentialsEncrypt(@Body ItemCredentialsEncryptRequest request);
-
-  @POST("/item/mfa/encrypt")
-  Call<ItemMfaEncryptResponse> itemMfaEncrypt(@Body ItemMfaEncryptRequest request);
 
   @POST("/item/public_token/exchange")
   Call<ItemPublicTokenExchangeResponse> itemPublicTokenExchange(@Body ItemPublicTokenExchangeRequest request);
@@ -118,12 +97,6 @@ public interface PlaidApiService {
   @POST("/item/access_token/invalidate")
   Call<ItemAccessTokenInvalidateResponse> itemAccessTokenInvalidate(@Body ItemAccessTokenInvalidateRequest request);
 
-  @POST("/item/access_token/update_version")
-  Call<ItemAccessTokenUpdateVersionResponse> itemAccessTokenUpdateVersion(@Body ItemAccessTokenUpdateVersionRequest request);
-
-  @POST("/item/delete")
-  Call<ItemDeleteResponse> itemDelete(@Body ItemDeleteRequest request);
-
   @POST("/item/remove")
   Call<ItemRemoveResponse> itemRemove(@Body ItemRemoveRequest request);
 
@@ -133,6 +106,9 @@ public interface PlaidApiService {
   // sandbox-only endpoints
   ////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////
+  @POST("/sandbox/item/fire_webhook")
+  Call<SandboxItemFireWebhookResponse> sandboxItemFireWebhook(@Body SandboxItemFireWebhookRequest request);
+
   @POST("/sandbox/item/reset_login")
   Call<SandboxItemResetLoginResponse> sandboxItemResetLogin(@Body SandboxItemResetLoginRequest request);
 
@@ -185,8 +161,17 @@ public interface PlaidApiService {
   @POST("/income/get")
   Call<IncomeGetResponse> incomeGet(@Body IncomeGetRequest request);
 
+  @POST("/investments/holdings/get")
+  Call<InvestmentsHoldingsGetResponse> investmentsHoldingsGet(@Body InvestmentsHoldingsGetRequest request);
+
+  @POST("/investments/transactions/get")
+  Call<InvestmentsTransactionsGetResponse> investmentsTransactionsGet(@Body InvestmentsTransactionsGetRequest request);
+
   @POST("/transactions/get")
   Call<TransactionsGetResponse> transactionsGet(@Body TransactionsGetRequest request);
+
+  @POST("/liabilities/get")
+  Call<LiabilitiesGetResponse> liabilitiesGet(@Body LiabilitiesGetRequest request);
 
   @POST("/credit_details/get")
   Call<CreditDetailsGetResponse> creditDetailsGet(@Body CreditDetailsGetRequest request);

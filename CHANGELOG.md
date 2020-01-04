@@ -1,3 +1,34 @@
+# 5.1.4
+- Add support for [Credit liabilities](https://plaid.com/docs/api/#liabilities).
+- Add support for Account subtype filtering in [Institution Search](https://plaid.com/docs/#institution-search).
+- Remove support for deprecated endpoint `/item/access_token/update_version`.
+
+# 5.1.2
+
+- Add support for [Student loan liabilities](https://plaid.com/docs/api/#liabilities).
+
+# 5.1.0
+
+- Add support for [Investments](https://plaid.com/docs/api/#investments).
+
+# 5.0.0
+
+- Add support for 2019-05-29 API version
+
+# 4.0.3
+
+- Allow more robust customization of underlying OkHttpClient used by PlaidClient.
+
+# 4.0.2
+
+- Add support for [`/sandbox/item/fire_webhook`][sandbox-item-fire-webhook] endpoint ([#140](https://github.com/plaid/plaid-java/pull/140))
+
+# 4.0.1
+
+- Deprecate direct integration as it is no longer supported
+- Replace `/item/delete` with `/item/remove`
+- Add support for include_institution_data for /institutions/search, /institutions/get, /institutions/get_by_id ([#134](https://github.com/plaid/plaid-java/pull/134))
+
 # 3.0.7
 
 - Fix transaction get request handling. ([#132](https://github.com/plaid/plaid-java/pull/132))
@@ -55,3 +86,5 @@
 # 2.1.0
 
 - Initial release for [Plaid's updated API](https://blog.plaid.com/improving-our-api)
+
+[sandbox-item-fire-webhook]: https://plaid.com/docs/#firing-webhooks

@@ -7,6 +7,7 @@ import com.plaid.client.request.common.Product;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.plaid.client.internal.Util.notEmpty;
 import static com.plaid.client.internal.Util.notNull;
@@ -19,7 +20,7 @@ import static com.plaid.client.internal.Util.notNull;
 public final class InstitutionsSearchRequest extends BasePublicRequest {
   private String query;
   private RequiredField<List<Product>> products = RequiredField.empty();
-
+  private Options options;
 
   public InstitutionsSearchRequest(String query) {
     notNull(query, "query");
@@ -35,4 +36,33 @@ public final class InstitutionsSearchRequest extends BasePublicRequest {
     return this;
   }
 
+  public InstitutionsSearchRequest withIncludeOptionalMetadata(boolean includeOptionalMetadata) {
+    if (this.options == null) {
+      this.options = new Options();
+    }
+    this.options.includeOptionalMetadata = includeOptionalMetadata;
+    return this;
+  }
+
+  public InstitutionsSearchRequest withCountryCodes(List<String> countryCodes) {
+    if (this.options == null) {
+      this.options = new Options();
+    }
+    this.options.countryCodes = countryCodes;
+    return this;
+  }
+
+  public InstitutionsSearchRequest withAccountFilter(Map<String, List<String>> accountFilter) {
+    if (this.options == null) {
+      this.options = new Options();
+    }
+    this.options.accountFilter = accountFilter;
+    return this;
+  }
+
+  private static class Options {
+    private boolean includeOptionalMetadata;
+    private List<String> countryCodes;
+    private Map<String, List<String>> accountFilter;
+  }
 }

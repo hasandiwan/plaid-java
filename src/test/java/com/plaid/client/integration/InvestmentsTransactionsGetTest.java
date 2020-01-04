@@ -3,16 +3,19 @@ package com.plaid.client.integration;
 import com.plaid.client.request.AccountsGetRequest;
 import com.plaid.client.request.SandboxPublicTokenCreateRequest;
 import com.plaid.client.request.ItemPublicTokenExchangeRequest;
-import com.plaid.client.request.TransactionsGetRequest;
+import com.plaid.client.request.InvestmentsTransactionsGetRequest;
 import com.plaid.client.request.common.Product;
+import com.plaid.client.response.Account;
 import com.plaid.client.response.AccountsGetResponse;
 import com.plaid.client.response.ErrorResponse;
 import com.plaid.client.response.ItemPublicTokenExchangeResponse;
+import com.plaid.client.response.InvestmentsTransactionsGetResponse;
 import com.plaid.client.response.SandboxPublicTokenCreateResponse;
-import com.plaid.client.response.TransactionsGetResponse;
+import com.plaid.client.response.Security;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -24,7 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class TransactionsGetTest extends AbstractIntegrationTest {
+public class InvestmentsTransactionsGetTest extends AbstractIntegrationTest {
   private String accessToken;
   private Date startDate;
   private Date endDate;
@@ -32,7 +35,7 @@ public class TransactionsGetTest extends AbstractIntegrationTest {
   @Before
   public void setUp() throws Exception {
     Response<SandboxPublicTokenCreateResponse> createResponse =
-      client().service().sandboxPublicTokenCreate(new SandboxPublicTokenCreateRequest(TARTAN_BANK_INSTITUTION_ID, Arrays.asList(Product.TRANSACTIONS))).execute();
+      client().service().sandboxPublicTokenCreate(new SandboxPublicTokenCreateRequest(TARTAN_BANK_INSTITUTION_ID, Arrays.asList(Product.INVESTMENTS))).execute();
 
     assertSuccessResponse(createResponse);
 
@@ -48,13 +51,13 @@ public class TransactionsGetTest extends AbstractIntegrationTest {
 
   @Test
   public void testSuccess() throws Exception {
-    TransactionsGetRequest request =
-      new TransactionsGetRequest(accessToken, startDate, endDate)
+    InvestmentsTransactionsGetRequest request =
+      new InvestmentsTransactionsGetRequest(accessToken, startDate, endDate)
         .withCount(100);
 
-    Response<TransactionsGetResponse> response = null;
+    Response<InvestmentsTransactionsGetResponse> response = null;
     for (int i = 0; i < 5; i++) {
-      response = client().service().transactionsGet(request).execute();
+      response = client().service().investmentsTransactionsGet(request).execute();
       if (response.isSuccessful()) {
         break;
       } else {
@@ -64,38 +67,52 @@ public class TransactionsGetTest extends AbstractIntegrationTest {
       }
     }
     assertSuccessResponse(response);
-    assertNotNull(response.body().getTotalTransactions());
+    assertNotNull(response.body().getTotalInvestmentTransactions());
     assertNotNull(response.body().getItem());
     assertNotNull(response.body().getAccounts());
     assertFalse(response.body().getAccounts().isEmpty());
-    assertTrue(response.body().getTransactions().size() > 0);
-    for (TransactionsGetResponse.Transaction txn : response.body().getTransactions()) {
-      assertNotNull(txn.getTransactionId());
+    assertTrue(response.body().getInvestmentTransactions().size() > 0);
+
+    List<InvestmentsTransactionsGetResponse.InvestmentTransaction> investmentTransactions = response.body().getInvestmentTransactions();
+    assertTrue(investmentTransactions.size() > 0);
+    for (InvestmentsTransactionsGetResponse.InvestmentTransaction txn : investmentTransactions) {
+      assertNotNull(txn.getInvestmentTransactionId());
       assertNotNull(txn.getAccountId());
-      assertNotNull(txn.getPending());
-      assertNotNull(txn.getTransactionType());
-      assertNotNull(txn.getPaymentMeta());
       assertNotNull(txn.getDate());
       assertNotNull(txn.getName());
       assertNotNull(txn.getAmount());
-      assertNotNull(txn.getLocation());
+      assertNotNull(txn.getType());
       assertNotNull(txn.getIsoCurrencyCode());
+    }
+
+    List<Security> securities = response.body().getSecurities();
+    assertTrue(securities.size() > 0);
+    for (Security security : securities) {
+      assertNotNull(security.getSecurityId());
+      assertNotNull(security.getName());
+      assertNotNull(security.getType());
+      assertNotNull(security.getClosePrice());
+      assertNotNull(security.getIsoCurrencyCode());
     }
   }
 
-  // TODO: Enable test, see #7
-  @Ignore
   public void testFullyLoadedRequest() throws Exception {
     // get some account info
     Response<AccountsGetResponse> accountsGetResponse =
       client().service().accountsGet(new AccountsGetRequest(accessToken)).execute();
     assertSuccessResponse(accountsGetResponse);
-    String someAccountId = accountsGetResponse.body().getAccounts().get(0).getAccountId();
+    String someAccountId = null;
+    for (Account account : accountsGetResponse.body().getAccounts()) {
+      if ("investment".equals(account.getType())) {
+        someAccountId = account.getAccountId();
+        break;
+      }
+    }
 
     // actual test
     int numTxns = 2;
-    Response<TransactionsGetResponse> response = client().service().transactionsGet(
-      new TransactionsGetRequest(
+    Response<InvestmentsTransactionsGetResponse> response = client().service().investmentsTransactionsGet(
+      new InvestmentsTransactionsGetRequest(
         accessToken,
         startDate,
         endDate)
@@ -104,14 +121,14 @@ public class TransactionsGetTest extends AbstractIntegrationTest {
         .withOffset(1)).execute();
 
     assertSuccessResponse(response);
-    assertTrue(response.body().getTotalTransactions() > numTxns);
-    assertEquals(numTxns, response.body().getTransactions().size());
+    assertTrue(response.body().getTotalInvestmentTransactions() > numTxns);
+    assertEquals(numTxns, response.body().getInvestmentTransactions().size());
   }
 
   @Test
   public void testBadAccessToken() throws Exception {
-    Response<TransactionsGetResponse> response = client().service().transactionsGet(
-      new TransactionsGetRequest(
+    Response<InvestmentsTransactionsGetResponse> response = client().service().investmentsTransactionsGet(
+      new InvestmentsTransactionsGetRequest(
         "totally-invalid-stuff",
         new Date(),
         new Date()))
